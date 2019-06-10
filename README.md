@@ -1,5 +1,5 @@
 # Kov
-Kov is a **experimental** Kotlin/JS library for building web interface through Kotlin DSL and virtual DOM.
+Kov is an **experimental** Kotlin/JS library for building web interface through Kotlin DSL and virtual DOM.
 
 ## Usage
 See [Example](https://github.com/Monchi/Kov/tree/master/example).

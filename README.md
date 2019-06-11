@@ -9,3 +9,4 @@ cd example
 ../gradlew build
 ```
 Then open index.html in your browser.
+Or you can see latest working example [here](https://kov-example.netlify.com/).

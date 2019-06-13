@@ -1,19 +1,30 @@
 package land.mog.kov
 
-class ElementBuilder(private val root: VNode.VElement, rawAttributes: Map<String, String?>) {
+import land.mog.kov.tags.A
+import land.mog.kov.tags.Div
+import land.mog.kov.tags.P
+
+open class ElementBuilder(private val root: VNode.VElement, rawAttributes: Map<String, String?> = root.attributes) {
     private val children = root.children.toMutableList()
-    private val attributes = vAttributeMapOf(rawAttributes).toMutableMap()
+    protected val attributes = vAttributeMapOf(rawAttributes).toMutableMap()
     var id: String?
         get() = attributes["id"]
         set(value) {
             if (value == null) attributes.remove("id")
             else attributes["id"] = value
     }
+    var classes: String?
+        get() = attributes["class"]
+        set(value) {
+            if (value == null) attributes.remove("class")
+            else attributes["class"] = value
+        }
     
-    fun appendElement(name: String, rawAttributes: Map<String, String?>, block: ElementBuilder.() -> Unit): ElementBuilder {
-        val builder = ElementBuilder(VNode.VElement(name), rawAttributes)
-        block.invoke(builder)
-        return this.addChildNode(builder.build())
+    constructor(tagName: String): this(VNode.VElement(tagName))
+    
+    fun <T: ElementBuilder> appendElement(element: T, block: T.() -> Unit): ElementBuilder {
+        element.apply(block)
+        return this.addChildNode(element.build())
     }
 
     fun addChildNode(node: VNode): ElementBuilder {
@@ -40,19 +51,23 @@ class ElementBuilder(private val root: VNode.VElement, rawAttributes: Map<String
 
 fun ElementBuilder.text(text: String) = this.addChildNode(VNode.VText(text))
 
-fun ElementBuilder.a(classes: String? = null, href: String? = null, block: ElementBuilder.() -> Unit) = appendElement(
-    name = "a", 
-    rawAttributes = mapOf("class" to classes, "href" to href), 
+fun ElementBuilder.a(classes: String? = null, href: String? = null, block: A.() -> Unit) = appendElement(
+    element = A().apply {
+        this.classes = classes
+        this.href = href
+    },
     block = block
 )
-fun ElementBuilder.div(classes: String? = null, block: ElementBuilder.() -> Unit) = appendElement(
-    name = "div",
-    rawAttributes = mapOf("class" to classes),
+fun ElementBuilder.div(classes: String? = null, block: Div.() -> Unit) = appendElement(
+    element = Div().apply {
+        this.classes = classes
+    },
     block = block
 )
-fun ElementBuilder.p(classes: String? = null, block: ElementBuilder.() -> Unit) = appendElement(
-    name = "p",
-    rawAttributes = mapOf("class" to classes),
+fun ElementBuilder.p(classes: String? = null, block: P.() -> Unit) = appendElement(
+    element = P().apply {
+        this.classes = classes
+    },
     block = block
 )
 

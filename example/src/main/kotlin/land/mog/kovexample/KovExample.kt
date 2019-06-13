@@ -31,7 +31,8 @@ fun main() {
             p { 
                 text("P appended") 
             }
-            a(href = "https://google.co.jp") {
+            a {
+                href = "https://google.co.jp"
                 text("A appended with href")
             }
         }

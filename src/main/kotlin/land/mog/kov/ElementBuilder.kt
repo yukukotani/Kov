@@ -9,17 +9,10 @@ open class ElementBuilder(private val root: VNode.VElement, rawAttributes: Map<S
     protected val attributes = vAttributeMapOf(rawAttributes).toMutableMap()
     var id: String?
         get() = attributes["id"]
-        set(value) {
-            if (value == null) attributes.remove("id")
-            else attributes["id"] = value
-    }
+        set(value) = setAttribute("id", value)
     var classes: String?
         get() = attributes["class"]
-        set(value) {
-            if (value == null) attributes.remove("class")
-            else attributes["class"] = value
-        }
-    
+        set(value) = setAttribute("class", value)
     constructor(tagName: String): this(VNode.VElement(tagName))
     
     fun <T: ElementBuilder> appendElement(element: T, block: T.() -> Unit): ElementBuilder {
@@ -38,6 +31,11 @@ open class ElementBuilder(private val root: VNode.VElement, rawAttributes: Map<S
             children = children,
             attributes = attributes
         )
+    }
+    
+    protected fun setAttribute(name: String, value: String?) {
+        if (value == null) attributes.remove(name)
+        else attributes[name] = value
     }
 
     companion object {
